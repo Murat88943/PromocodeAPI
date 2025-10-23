@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>example</groupId>
-	<artifactId>promocodeAPI</artifactId>
+	<artifactId>PromocodeAPI</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>promocodeAPI</name>
 	<description>Demo project for Spring Boot</description>
@@ -44,6 +44,12 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.45.1.0</version>
+        </dependency>
 	</dependencies>
 
 	<build>
