@@ -5,6 +5,7 @@ import example.PromocodeAPI.models.Promocode;
 import example.PromocodeAPI.services.PromocodeService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,7 +21,15 @@ public class PromocodeController {
     }
 
     @PostMapping("/create")
-    public String createPromocode(@RequestBody Promocode promocode) { // Используем модель Promocode вместо PromocodeCreateRequest
+    public String createPromocode(@RequestBody Promocode promocode) {
         return promocodeService.createPromocode(promocode);
     }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<Void> deletePromocode (@RequestParam("PromocodeId") Long PromocodeId) {
+        promocodeService.deletePromocode(PromocodeId);
+
+        return ResponseEntity.ok().build();
+    }
+
 }

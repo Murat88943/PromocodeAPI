@@ -1,58 +1,41 @@
 package example.PromocodeAPI.database;
 
 import example.PromocodeAPI.models.Promocode;
-import java.sql.*;
-import java.util.ArrayList;
+import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
+import java.util.Optional;
 
+@Repository
 public class PromocodeRepository {
-    private static final String URL = "jdbc:sqlite:promocodes.db";
 
-    public List<Promocode> findAllPromocodes() {
-        List<Promocode> promocodes = new ArrayList<>();
+    private final JdbcClient jdbcClient;
 
-        try (Connection conn = DriverManager.getConnection(URL);
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT * FROM promocodes")) {
-
-            while (rs.next()) {
-                Promocode promo = new Promocode();
-                promo.setId(rs.getLong("id"));
-                promo.setCode(rs.getString("code"));
-                promo.setLength(rs.getInt("length"));
-                promo.setActivations(rs.getInt("activations"));
-                promo.setDescription(rs.getString("description"));
-                promo.setDiscount(rs.getInt("discount"));
-                promo.setIsActive(rs.getBoolean("is_active"));
-                promo.setBusinessEmail(rs.getString("business_email"));
-                promocodes.add(promo);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return promocodes;
+    public PromocodeRepository(JdbcClient jdbcClient) {
+        this.jdbcClient = jdbcClient;
     }
 
-    // Добавляем метод для сохранения промокода
+    public List<Promocode> findAllPromocodes() {
+        return jdbcClient.sql("SELECT * FROM promocodes")
+                .query(Promocode.class)
+                .list();
+    }
+
     public void savePromocode(Promocode promocode) {
-        try (Connection conn = DriverManager.getConnection(URL);
-             PreparedStatement stmt = conn.prepareStatement(
-                     "INSERT INTO promocodes (code, length, activations, description, discount, is_active, business_email) VALUES (?, ?, ?, ?, ?, ?, ?)")) {
+        jdbcClient.sql("INSERT INTO promocodes (code, length, activations, description, discount, is_active, business_email) VALUES (?, ?, ?, ?, ?, ?, ?)")
+                .param(promocode.getCode())
+                .param(promocode.getLength())
+                .param(promocode.getActivations())
+                .param(promocode.getDescription())
+                .param(promocode.getDiscount())
+                .param(promocode.getIsActive())
+                .param(promocode.getBusinessEmail())
+                .update();
+    }
 
-            stmt.setString(1, promocode.getCode());
-            stmt.setInt(2, promocode.getLength());
-            stmt.setInt(3, promocode.getActivations());
-            stmt.setString(4, promocode.getDescription());
-            stmt.setInt(5, promocode.getDiscount());
-            stmt.setBoolean(6, promocode.getIsActive());
-            stmt.setString(7, promocode.getBusinessEmail());
-
-            stmt.executeUpdate();
-            System.out.println("Промокод сохранен в БД: " + promocode.getCode());
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public void deletePromocode(Long promocodeId) {
+        String sql = "DELETE FROM promocodes WHERE id = ?";
+        jdbcClient.sql(sql).param(promocodeId).update();
     }
 }
