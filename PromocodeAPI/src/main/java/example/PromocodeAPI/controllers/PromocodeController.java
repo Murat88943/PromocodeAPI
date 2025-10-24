@@ -1,8 +1,11 @@
 package example.PromocodeAPI.controllers;
 
 import java.util.List;
+import java.util.Optional;
+
 import example.PromocodeAPI.models.Promocode;
 import example.PromocodeAPI.services.PromocodeService;
+import example.PromocodeAPI.database.PromocodeRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +33,12 @@ public class PromocodeController {
         promocodeService.deletePromocode(PromocodeId);
 
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{PromocodeId}")
+    public Promocode getPromocodeById(@PathVariable Long PromocodeId) {
+        return promocodeService.getPromocodeById(PromocodeId)
+                .orElse(null);
     }
 
 }

@@ -36,6 +36,16 @@ public class PromocodeRepository {
 
     public void deletePromocode(Long promocodeId) {
         String sql = "DELETE FROM promocodes WHERE id = ?";
-        jdbcClient.sql(sql).param(promocodeId).update();
+        jdbcClient.sql(sql)
+                .param(promocodeId)
+                .update();
+    }
+
+    public Optional<Promocode> getPromocodeById(Long promocodeId) {
+        String sql = "SELECT * FROM promocodes WHERE id = ?";
+        return jdbcClient.sql(sql)
+                .param(promocodeId)
+                .query(Promocode.class)
+                .optional();
     }
 }

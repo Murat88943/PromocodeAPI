@@ -4,7 +4,9 @@ import example.PromocodeAPI.models.Promocode;
 import example.PromocodeAPI.database.PromocodeRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PromocodeService {
@@ -14,6 +16,10 @@ public class PromocodeService {
     @Autowired
     public PromocodeService(PromocodeRepository repository) {
         this.repository = repository;
+    }
+
+    public Optional<Promocode> getPromocodeById(Long PromocodeId) {
+        return repository.getPromocodeById(PromocodeId);
     }
 
     public List<Promocode> findAllPromocodes() {
